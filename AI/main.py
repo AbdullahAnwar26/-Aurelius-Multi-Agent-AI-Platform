@@ -3,7 +3,7 @@ import os
 
 def sample_root_agent(query: str, file_path=None):
     
-    sample_directory = "C:\\Users\\devra\\Desktop\\AI"
+    sample_directory = "C:\\Users\\devra\\Desktop\\AI"  #enter your file path of the directory
     sample_image_path = os.path.join(sample_directory, "sample_image.png")
     output_filename = "sample_output.txt"                    #file output is optional, only certain agents return files. 
     sample_output = "sample text output of the root agent"   #text will always be one of the output 
