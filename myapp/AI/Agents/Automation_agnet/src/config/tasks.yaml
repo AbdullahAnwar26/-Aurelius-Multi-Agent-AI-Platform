@@ -1,0 +1,93 @@
+research_task:
+  description: >
+    recsearch on the topic provided in the {query} and this {query} also know as user giving query . there are some exapamples of the query and you can use them to understand the topic.
+    Examples of queries but don't use these giving examples as an {query} , use only user giving query:
+    - "What are the latest advancements in quantum computing?"
+    - genrate a report on "Artificial Intelligence in Healthcare"
+    - create report on "Sustainable Energy Solutions"
+    - genrate a report on "Artificial Intelligence in Healthcare" and send an email to xyz@gmail.com with report topic subject and report as body.
+    don't use these giving examples as an query but use them to understand {query}.
+    if in the query user provide the email id then you must send the report to that email id.
+    if user provide the file path then you must attach that file to the email.
+    Make sure you find any interesting and relevant information about topic.
+    The time period should be at least within the last 4 months. Today is {date}.
+  expected_output: >
+    A list with 10 bullet points of the most relevant information about topic
+  agent: researcher
+  # output_file: output/research.txt
+
+reporting_task:
+  description: >
+    Review the context you got and expand each topic into a full section for a report.
+    Make sure the report is detailed and contains any and all relevant information.
+    The report should be dated {date}. The audience should be a broad audience
+    with a wide range of expertise looking for insights into the latest developments
+    in topic.
+  expected_output: >
+    A fully fledge reports with the mains topics, each with a full section of information.
+    Formatted as markdown without '```'
+  agent: reporting_analyst
+  context: [research_task]
+  output_file: output/report.json
+
+formatting_task:
+  description: >
+    Format the executive report into a beautiful markdown document without '```'.
+    Follow these guidelines:
+    1. Use proper markdown headers
+    2. don't Include emojis
+    3. Format key findings and insights as bullet points
+    4. Add proper spacing and sections breaks
+    5. Make recommendations stand out using blockquotes
+    6. Ensure the date is properly formatted
+    7. Use horizontal rules (---) to separate major sections
+    8. Add inline citations for each major claim using (Author, Year) format
+    9. Include a Sources section at the end with numbered references
+    10. Each source should include title, publisher/author, and URL
+    11. Link inline citations to the corresponding entry in the Sources section
+  expected_output: >
+    A beautifully formatted markdown report with proper structure, spacing,
+    citations, and visual elements that enhance readability and presentation.
+    send the report to email id mentioned in {query} if user provide the email id.
+
+  agent: formatter
+  context: [reporting_task]
+  output_file: output/report.txt
+
+send_email_task:
+  description: >
+    Interpret the user's instruction to send an email using SMTP.
+    attached file if provided to send the email.
+    Determine whether it is a single recipient or a bulk email task by checking if a CSV file is specified.
+    If the user instructs you to "write", "generate", or "compose" the message content, you must generate the email body using the configured LLM.
+    Otherwise, use the provided message content directly without modification.
+
+    You must also support attaching a file if the user includes an attachment path.
+    Ensure that all required SMTP configuration (server, port, username, password) and content (recipient(s), subject, message, optional attachment) are valid before attempting to send.
+    here are some examples of the query:
+    Example: "to receiver@example.com with subject 'Hello' and message 'Test message or report content'".
+        file_path (Optional[str]): The path to a file to attach. Defaults to None.
+    Example:genrate a report on the indian media then take as message and send an email to sheikhupdesk@gmail.com with subject indian media and try to send full report and  with attached file    
+    Example: send an email to emails which i provide in csv file with subject 'Hello' and message 'Hope youre doing well'    
+    Eample: send an email to sheikhupdesk@gmail.com with subject indian media and message to ask about your self with file i provided
+    Example : send an email to sheikhupdesk@gmail.com with subject indian media and in message write a peom on cow with attached file
+    Example: genrate the report on the india it industry then send an email to emails which i provide in csv file with subject 'test' and attech the file also send
+    Example : genrate the report on the india it industry then send an email to emails which i provide in csv file with subject 'test' and send attached file
+    example : genrate a report on "Artificial Intelligence in Healthcare" and send an email to xyz@gmail.com with report topic subject and report as body.
+    example : generate a report on the <any topic> and send as an email to emails which are provided in csv file with subject test and with attachment picture"
+    example : {query}
+    don't use these giving examples in query but use them to understand query.
+    Your final output MUST confirm one of the following:
+    - "Email sent successfully to <recipient>"
+    - "Bulk email sent successfully to X recipients"
+    -  OR return the appropriate error message with context.
+
+  expected_output: >
+    A detailed status report of the email operation, including recipient count,
+    file  path if used, the content of the email body, and whether AI was used to generate the message.
+    If successful, include the recipient(s),
+    subject line, AI generation (if used), and any attachment included.
+    In case of failure, include the cause and suggest what to fix (e.g., missing SMTP config or malformed CSV).
+  # context: [reporting_task]
+  agent: email_assistant  
+

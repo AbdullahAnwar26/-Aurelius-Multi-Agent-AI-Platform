@@ -1,0 +1,17 @@
+load_reviews:
+  description: >
+    check the file type from the input query and use that file type loader only to Load reviews from the specified file using the file path which is also in the input query  and send it to sentiment_emotion_analyzer agent
+  expected_output: >
+    Reviews from the loaded content of the file ready to be sent to sentiment_emotion_analyzer agent
+  agent: fileloader
+
+analyze_sentiment_and_emotion:
+  description: >
+    Analyze the loaded Reviews to calculate the percentage of positive and negetive sentiments
+    Also Detect and report the dominant emotion present in the reviews.
+  expected_output: >
+    Persentage of positive and negetive reviews and the dominant emotion
+  agent: sentiment_emotion_analyzer
+  context: [load_reviews]
+
+

@@ -1,0 +1,20 @@
+scoring_task:
+  agent: scoring_agent
+  description: >
+    Analyze the provided resume and job title.
+    Assign a score from 1 to 100 based on how well the resume aligns with the job title.
+    Justify the score with reasons based on resume content.
+  expected_output: >
+    A numeric score between 1 and 100 with a brief explanation.
+
+feedback_task:
+  agent: feedback_agent
+  description: >
+    Based on the resume, job title, and the score from the previous task, generate a detailed feedback report of about 30 to 40 words.
+    Include:
+      - Summary of resume-job title alignment
+      - Strengths with evidence
+      - Areas for improvement(3 to 5 brief points)
+      - Actionable suggestions(3 to 5 brief points)
+  expected_output: >
+    A full feedback report for the candidate based on score and resume content.
