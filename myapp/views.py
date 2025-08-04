@@ -63,6 +63,8 @@ class AgentAPIView(APIView):
     def post(self, request, agent_name):
         query = request.data.get("query")
         file = request.FILES.get("file")
+        print("query :", query)
+        print("file :", file)
         csv_file = request.FILES.get("csv")
         agent_name = agent_name or request.data.get("agent_name")
         user = request.user

@@ -4,7 +4,7 @@ from crewai.project import CrewBase, agent, crew, task
 from pydantic import BaseModel, Field
 from typing import List, Dict
 from datetime import datetime
-from .tools.email import send_email_smtp  
+from .tools.email import send_email_smtp
 
 
 
@@ -61,7 +61,7 @@ class AutomationAgent():
         """
         return Agent(
             config=self.agents_config['researcher'],
-            verbose=True,
+            verbose=False,
             # tools=[SerperDevTool()],
         )
 
@@ -71,14 +71,14 @@ class AutomationAgent():
           Reporting Analyst agent to create detailed reports based on research findings."""
         return Agent(
             config=self.agents_config['reporting_analyst'],
-            verbose=True
+            verbose=False
         )
     @agent
     def formatter(self) -> Agent:
         """ Formatter agent to format the report and prepare it for email if email adress is provided in query."""
         return Agent(
             config=self.agents_config['formatter'],
-            verbose=True
+            verbose=False
        )
     @agent
     def email_assistant(self) -> Agent:
@@ -86,7 +86,7 @@ class AutomationAgent():
         return Agent(
             config=self.agents_config['email_assistant'],
             tools=[send_email_smtp],
-            verbose=True
+            verbose=False
         )
    
     @task
@@ -126,5 +126,5 @@ class AutomationAgent():
             agents=self.agents, 
             tasks=self.tasks,
             process=Process.sequential,
-            verbose=True,
+            verbose=False,
         )
