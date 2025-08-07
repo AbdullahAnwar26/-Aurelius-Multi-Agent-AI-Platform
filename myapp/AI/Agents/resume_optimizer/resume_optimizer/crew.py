@@ -44,6 +44,7 @@ class ResumeOpt:
             input=input_data
         )
 
+
     def feedback_task(self, resume_text: str, job_title: str) -> Task:
         def input_function(scoring_output):
             return {

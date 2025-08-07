@@ -49,7 +49,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class AgentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Agent
-        fields = ['raw']
+        fields = '__all__'
 
 
 class AgentIntegrationSerializer(serializers.ModelSerializer):

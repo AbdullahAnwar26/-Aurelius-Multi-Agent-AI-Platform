@@ -4,8 +4,7 @@ from crewai.project import CrewBase, agent, crew, task
 from pydantic import BaseModel, Field
 from typing import List, Dict
 from datetime import datetime
-from .tools.email import send_email_smtp
-
+from .tools.email import send_email_smtp  
 
 
 class ResearchPoint(BaseModel):
@@ -80,6 +79,8 @@ class AutomationAgent():
             config=self.agents_config['formatter'],
             verbose=False
        )
+    
+
     @agent
     def email_assistant(self) -> Agent:
         """Email Assistant agent to send emails with the report and attachments."""
@@ -88,7 +89,8 @@ class AutomationAgent():
             tools=[send_email_smtp],
             verbose=False
         )
-   
+    
+    
     @task
     def research_task(self) -> Task:
         """Task to perform research on a given topic."""
@@ -111,13 +113,14 @@ class AutomationAgent():
         return Task(
             config=self.tasks_config['formatting_task']
         )
-
+    
     @task
     def send_email_task(self) -> Task:
-        """Task to send an email with the report and attachments."""
+        """Task to send an email with the report and attachments and writen meesage."""
         return Task(
             config=self.tasks_config['send_email_task']
         )
+    
 
     @crew
     def crew(self) -> Crew:

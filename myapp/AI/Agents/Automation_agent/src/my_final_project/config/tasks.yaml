@@ -6,6 +6,7 @@ research_task:
     - genrate a report on "Artificial Intelligence in Healthcare"
     - create report on "Sustainable Energy Solutions"
     - genrate a report on "Artificial Intelligence in Healthcare" and send an email to xyz@gmail.com with report topic subject and report as body.
+    - {query}
     don't use these giving examples as an query but use them to understand {query}.
     if in the query user provide the email id then you must send the report to that email id.
     if user provide the file path then you must attach that file to the email.
@@ -57,37 +58,51 @@ formatting_task:
 send_email_task:
   description: >
     Interpret the user's instruction to send an email using SMTP.
-    attached file if provided to send the email.
-    Determine whether it is a single recipient or a bulk email task by checking if a CSV file is specified.
-    If the user instructs you to "write", "generate", or "compose" the message content, you must generate the email body using the configured LLM.
-    Otherwise, use the provided message content directly without modification.
 
-    You must also support attaching a file if the user includes an attachment path.
-    Ensure that all required SMTP configuration (server, port, username, password) and content (recipient(s), subject, message, optional attachment) are valid before attempting to send.
-    here are some examples of the query:
-    Example: "to receiver@example.com with subject 'Hello' and message 'Test message or report content'".
-        file_path (Optional[str]): The path to a file to attach. Defaults to None.
-    Example:genrate a report on the indian media then take as message and send an email to sheikhupdesk@gmail.com with subject indian media and try to send full report and  with attached file    
-    Example: send an email to emails which i provide in csv file with subject 'Hello' and message 'Hope youre doing well'    
-    Eample: send an email to sheikhupdesk@gmail.com with subject indian media and message to ask about your self with file i provided
-    Example : send an email to sheikhupdesk@gmail.com with subject indian media and in message write a peom on cow with attached file
-    Example: genrate the report on the india it industry then send an email to emails which i provide in csv file with subject 'test' and attech the file also send
-    Example : genrate the report on the india it industry then send an email to emails which i provide in csv file with subject 'test' and send attached file
-    example : genrate a report on "Artificial Intelligence in Healthcare" and send an email to xyz@gmail.com with report topic subject and report as body.
-    example : generate a report on the <any topic> and send as an email to emails which are provided in csv file with subject test and with attachment picture"
-    example : {query}
-    don't use these giving examples in query but use them to understand query.
-    Your final output MUST confirm one of the following:
-    - "Email sent successfully to <recipient>"
-    - "Bulk email sent successfully to X recipients"
-    -  OR return the appropriate error message with context.
+
+    Before invoking the tool:
+    - Normalize common typos in the query such as:
+        * "sibject" or "subjet" → "subject"
+        * "emial" or "mail" → "email"
+    - This ensures reliable parsing of the subject by the tool.
+
+    Your responsibilities include:
+    - Parsing the {query} to extract:
+        * A single email or list of recipients via {csv_file}
+        * A message body, which may come from:
+            - User-provided text in the query (e.g., "send this message...")
+            - AI-generated text from the `write_email_body` task
+            - A report from the `generate_report` task
+        * A subject, which may be explicitly given or inferred from the topic
+    - Attaching a file if the {file_path} is provided
+    - Validating SMTP configuration before sending
+    - Sending either a single or bulk email depending on whether {csv_file} is present
+    - Combining the AI-generated content and inline message into one body, when both are present
+
+    Examples:
+    - Query: "Write an email to sheikhupdesk@gmail.com and in send this message 'ask him where is the file kept' , Also tell him the benefits of Technology"
+    - Query: "Generate a report on AI regulation and send it to john@example.com with subject 'AI Update'"
+    - Query: "Send the report to clients listed in clients.csv with subject 'Compliance Update' and attach the file"
+    - Query: "Write an emails which i provided in csv file and in send this message 'ask him where is the file kept' , Also tell him the benefits of Technology"
+    - Query: {query}
+    You MUST ensure that both report and AI-generated content are passed to the tool for use in the final message body in very concise and brief as a professional email.
 
   expected_output: >
-    A detailed status report of the email operation, including recipient count,
-    file  path if used, the content of the email body, and whether AI was used to generate the message.
-    If successful, include the recipient(s),
-    subject line, AI generation (if used), and any attachment included.
-    In case of failure, include the cause and suggest what to fix (e.g., missing SMTP config or malformed CSV).
-  # context: [reporting_task]
-  agent: email_assistant  
+    A detailed status report of the email operation, including:
+    - Whether the email was sent successfully
+    - The recipient(s)
+    - The subject
+    - Whether AI content or a report was used
+    - Any attachment status
+    - Clear error messages if something failed (e.g., missing subject, broken CSV, file not found)
 
+  # context: [generate_report]
+
+  agent: email_assistant
+
+  input_map:
+    query: query
+    file_path: file_path
+    csv_file: csv_file
+    report_content: generate_report
+    ai_generated_body: write_email_body

@@ -45,7 +45,7 @@ class Sentiment_analysis_crew:
                 PDFSearchTool(config=tool_config),
                 TXTSearchTool(config=tool_config),
             ],
-            verbose=True,
+            verbose=False,
         )
 
     @agent
@@ -76,5 +76,5 @@ class Sentiment_analysis_crew:
             agents=self.agents,
             tasks=self.tasks,
             process=Process.sequential,
-            verbose=True,
+            verbose=False,
         )

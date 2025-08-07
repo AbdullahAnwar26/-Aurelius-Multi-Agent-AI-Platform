@@ -19,7 +19,9 @@ class User(AbstractUser):
 class Agent(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    sample_code = models.TextField()
+    sample_code = models.TextField(blank=True, null=True)
+    is_featured = models.BooleanField(default=False)
+    display_order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

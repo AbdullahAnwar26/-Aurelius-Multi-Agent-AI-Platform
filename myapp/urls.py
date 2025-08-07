@@ -30,5 +30,12 @@ urlpatterns = [
     # 🧱 Model CRUD endpoints
     path('api/', include(router.urls)),
     path('api/integration-snippet/<str:agent_name>/', IntegrationSnippetAPIView.as_view(), name='integration_snippet'),
+
+
+
+    path('api/public-agents/', PublicAgentListView.as_view(), name='public-agents'),
+    path('api/public-agents/<int:id>/', PublicAgentDetailView.as_view(), name='agent-detail'),
+
+
 ]
 

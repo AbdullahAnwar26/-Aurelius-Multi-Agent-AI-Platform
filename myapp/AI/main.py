@@ -1,5 +1,6 @@
 from crewai import LLM, Task, Crew, Agent
 from myapp.AI.Agents.Qna_Agent.qna_agent import qna_agent
+from myapp.AI.Agents.Automation_agent.src.my_final_project.auto_main import auto_run
 from dotenv import load_dotenv
 import os
 
@@ -12,7 +13,7 @@ def manager_agent_function(query,file_path = None):
     manager_agent = Agent(llm=rootllm,
                     backstory="""You are the lead coordinator. You don't solve the problem directly, but you know which specialized crew to call.""",
                     role="Orchestrator",
-                    tools=[qna_agent,],
+                    tools=[qna_agent,auto_run],
                     goal="Understand complex user queries and decide which crew(s) to route them to.")
 
     managertask = Task(agent=manager_agent,

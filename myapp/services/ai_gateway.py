@@ -4,7 +4,7 @@ from myapp.AI.Agents.talent_sourcing import talent_sourcing
 from myapp.AI.Agents.stock_agent import Stock
 from myapp.AI.Agents.resume_optimizer.resume_optimizer import crew
 from myapp.AI.Agents.sentiment_agent.src.Sentiment_Analysis_Crew import sentiment
-from myapp.AI.Agents.Automation_agnet.src import auto_main
+from myapp.AI.Agents.Automation_agent.src.my_final_project import auto_main
 from myapp.AI.Agents.RAG_researcher import AI_research
 from myapp.AI import main  # Root agent
 from datetime import datetime

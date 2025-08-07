@@ -47,7 +47,9 @@ llm = LLM(model= "gemini/gemini-2.0-flash", api_key=key)
 
 chat_memory = []
 
+
 def qna_agent(user_input:str):
+    """Answers the user's query using search tool and LLM"""
     context = "\n".join([f"User: {q}\nAssistant: {a}" for q, a in chat_memory[-5:]])
     
     

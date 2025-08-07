@@ -1,27 +1,31 @@
 load_reviews:
   description: >
-    Extract the file path and file type from the input query.
-    Based on the file extension, use the correct loader to read and extract customer reviews.
-    Only support known formats like .txt, .csv, .json, .xlsx, .pdf, and .docx.
-    Ensure the file exists, matches the detected extension, and return all reviews in plain text format.
-    Pass the cleaned review content to the sentiment_emotion_analyzer agent.
+    Based on the inputs {reviews_file} and {file_type}, choose the correct loader tool
+    to extract all customer reviews from the file. Supported file types are:
+    .txt, .csv, .json, .xlsx, .pdf, and .docx.
+
+    You must:
+    - Validate the file exists.
+    - Match the {file_type} to the correct loader.
+    - Return all reviews in plain text format.
+
+    Your output will be passed to the sentiment_emotion_analyzer agent.
   expected_output: >
     A single plain text string containing all reviews extracted from the file.
-    This will be passed to the sentiment_emotion_analyzer agent for analysis.
+    This output will be used for further sentiment and emotion analysis.
   agent: fileloader
 
 analyze_sentiment_and_emotion:
   description: >
-    Perform sentiment and emotion analysis on the reviews provided by the fileloader agent.
+    Perform sentiment and emotion analysis on the reviews provided by the fileloader.
 
-    Step 1: Analyze the content and calculate the percentage of positive and negative sentiment.
-    Step 2: Detect the top 1 to 3 dominant emotions expressed in the reviews (e.g., happiness, anger, sadness).
+    Step 1: Calculate the percentage of positive and negative reviews.
+    Step 2: Identify the 1 to 3 most dominant emotions (e.g., joy, anger, sadness).
 
-    You MUST provide real computed results only — DO NOT return placeholders like "[Insert Percentage Here]".
-    Ensure your output is structured, clear, and professional.
+    You must return real results — never use placeholders.
 
-    The format should exactly follow this structure:
-    
+    Format:
+
     Based on the analysis of the customer reviews:
 
     1. **Sentiment Analysis:**
@@ -31,9 +35,9 @@ analyze_sentiment_and_emotion:
     2. **Dominant Emotions:**
        * Emotion 1: <emotion>
        * Emotion 2: <emotion>
-       * Emotion 3: <emotion> (if applicable)
+       * Emotion 3: <emotion> (optional)
   expected_output: >
-    A structured summary that includes the actual percentages for sentiment breakdown and 1 to 3 dominant emotions.
-    Do not return placeholders. Final values must reflect actual analysis.
+    A structured summary that includes percentages and dominant emotions extracted from the review text.
+    Final values must be based on actual content, not placeholders.
   agent: sentiment_emotion_analyzer
   context: [load_reviews]
