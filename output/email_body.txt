@@ -1,0 +1,12 @@
+Subject: Test Mail for Mail Automation Agent
+
+Dear Team,
+
+This email serves as a test for our new AI-powered mail automation agent.
+
+This is the test mail of the AI agent from Affycloud. Thank you for your cooperation in this testing process.  Your feedback is valuable as we refine this system.
+
+
+Sincerely,
+
+The Affycloud Team

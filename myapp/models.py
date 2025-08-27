@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import uuid
+import secrets
+from django.conf import settings
 
 # Extended User model
 class User(AbstractUser):
@@ -44,8 +47,16 @@ class AgentIntegration(models.Model):
 # A user can have multiple conversations
 class Conversation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="conversations")
-    title = models.CharField(max_length=255)
+    agent = models.ForeignKey(Agent, on_delete=models.SET_NULL, null=True, blank=True, related_name="conversations")
+    title = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_root_agent = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.title:
+            self.title = "New Chat"
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.email} - {self.title}"
@@ -55,14 +66,16 @@ class Conversation(models.Model):
 class ChatMessage(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name="messages")
     agent = models.ForeignKey(Agent, on_delete=models.SET_NULL, null=True, related_name="chat_messages")
+    sender = models.CharField(max_length=50, choices=(("user", "User"), ("agent", "Agent")), default="user")
     message = models.TextField()
-    response = models.TextField()
+    response = models.TextField(blank=True, null=True)
     file = models.FileField(upload_to='chat_files/', null=True, blank=True)
-    tokens_used = models.IntegerField()
+    tokens_used = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Message {self.id} in {self.conversation}"
+
 
 
 # Log of tokens consumed by user per message
@@ -92,24 +105,38 @@ class Subscription(models.Model):
 # Store what the root agent routed
 class RootAgentMemory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='root_agent_memories')
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, null=True, blank=True, related_name='root_memories')
     user_input = models.TextField()
     routed_response = models.TextField()
-    used_agents = models.TextField()  # You can use JSONField if storing list
+    used_agents = models.JSONField()  # ✅ Easier querying
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Memory of {self.user.email}"
 
 
-# API key issued to users
 class APIKey(models.Model):
-    key = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='api_keys')
-    agent = models.ForeignKey(Agent, on_delete=models.CASCADE, related_name='api_keys')
+    key = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    label = models.CharField(max_length=100, blank=True, default="")
+    
+    # Per-agent permissions
+    allow_qna = models.BooleanField(default=False)
+    allow_data = models.BooleanField(default=False)
+    allow_talent = models.BooleanField(default=False)
+    allow_stock = models.BooleanField(default=False)
+    allow_resume = models.BooleanField(default=False)
+    allow_sentiment = models.BooleanField(default=False)
+    allow_auto = models.BooleanField(default=False)
+    allow_rag = models.BooleanField(default=False)
+    
+    # ✅ Add this field
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"API Key for {self.user.email} - {self.agent.name}"
+        return f"{self.user.email} - {self.key[:6]}…"
+
 
 
 # User feedback about agents
@@ -122,7 +149,3 @@ class AgentFeedback(models.Model):
 
     def __str__(self):
         return f"Feedback by {self.user.email} on {self.agent.name}"
-
-
-
-

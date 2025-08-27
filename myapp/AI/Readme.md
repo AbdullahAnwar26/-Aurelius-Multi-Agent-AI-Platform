@@ -158,3 +158,6 @@ Features:
 - Optionally integrates with external sources (e.g., X posts via API or mock data).
 - Skills Learned: Natural language processing, sentiment analysis, custom tool creation, text summarization.
 - Tools: LangChain’s Tool class for sentiment analysis (e.g., using Hugging Face’s sentiment models or NLTK), optional XPostLoader for social media data.
+
+
+

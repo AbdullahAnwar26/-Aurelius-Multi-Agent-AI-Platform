@@ -12,9 +12,13 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 # from rest_framework.authentication import BasicAuthentication
+from rest_framework.exceptions import PermissionDenied
 from .models import *
 from .serializers import *
 from .services.ai_gateway import call_ai_agent
+from .services.code_snippet_generator import generate_code_snippet
+from .authentication import APIKeyAuthentication
+
 
 import os
 
@@ -26,24 +30,82 @@ class RootAgentAPIView(APIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def post(self, request):
-        query = request.data.get("query")
+        query = request.data.get("query") or request.data.get("message")  # support both keys
         file = request.FILES.get("file")
+        conversation_id = request.data.get("conversation_id")
         user = request.user
 
+        if not query and not file:
+            return Response({"error": "query or file is required"}, status=400)
+
+        # Handle temp file saving
         file_path = None
         if file:
             os.makedirs('temp', exist_ok=True)
             file_path = f"temp/{file.name}"
-            with open(file_path, 'wb+') as destination:
+            with open(file_path, 'wb+') as dest:
                 for chunk in file.chunks():
-                    destination.write(chunk)
+                    dest.write(chunk)
 
+        # Get root agent
+        root_agent, _ = Agent.objects.get_or_create(
+            name="root",
+            defaults={"description": "Root Orchestrator Agent"}
+        )
+
+        # Get or create conversation
+        if conversation_id:
+            conversation = get_object_or_404(Conversation, id=conversation_id, user=user)
+            if conversation.agent != root_agent:
+                return Response({"error": "Conversation agent mismatch"}, status=403)
+        else:
+            conversation = Conversation.objects.create(
+                user=user,
+                agent=root_agent,
+                title=f"Chat with {root_agent.name}"
+            )
+
+        # Save user message
+        user_message_text = query if query else "[File uploaded]"
+        user_tokens = len(user_message_text.split()) if query else 0
+
+        ChatMessage.objects.create(
+            conversation=conversation,
+            agent=root_agent,
+            sender="user",
+            message=user_message_text,
+            tokens_used=user_tokens,
+            file=file if file else None
+        )
+
+        # Call AI agent
         result = call_ai_agent("root", query, file_path)
 
+        # Normalize AI reply text
+        if isinstance(result, dict):
+            ai_reply_text = result.get('text') or result.get('answer') or str(result)
+        else:
+            ai_reply_text = str(result)
+
+        # Save AI reply
+        agent_tokens = len(ai_reply_text.split())
+        ChatMessage.objects.create(
+            conversation=conversation,
+            agent=root_agent,
+            sender="agent",
+            message=ai_reply_text,
+            tokens_used=agent_tokens
+        )
+
+        # Clean up temp file
         if file_path and os.path.exists(file_path):
             os.remove(file_path)
 
-        return Response(result)
+        return Response({
+            "conversation_id": conversation.id,
+            "user_message": user_message_text,
+            "ai_reply": ai_reply_text
+        }, status=200)
 
 
 # ==================== Individual Agent View ====================
@@ -65,14 +127,34 @@ class AgentAPIView(APIView):
     def post(self, request, agent_name):
         query = request.data.get("query")
         file = request.FILES.get("file")
+        csv = request.FILES.get("csv")
         print("query :", query)
         print("file :", file)
-        csv_file = request.FILES.get("csv")
+        # csv_file = request.FILES.get("csv")
         agent_name = agent_name or request.data.get("agent_name")
         user = request.user
 
+        # ✅ If talent agent, use the whole request.data dict
+        if agent_name == "talent":
+            query = request.data  
+
         file_path = save_uploaded_file(file)
-        csv_file_path = save_uploaded_file(csv_file)
+        csv_file_path = save_uploaded_file(csv)
+
+
+        # # If using API Key
+        # auth_header = request.headers.get("Authorization", "")
+        # if "Bearer " in auth_header:
+        #     key = auth_header.split("Bearer ")[1]
+        #     try:
+        #         api_key = APIKey.objects.get(key=key, is_active=True)
+        #     except APIKey.DoesNotExist:
+        #         return Response({"error": "Invalid API key"}, status=403)
+
+        #     # Check if agent allowed
+        #     if not api_key.allowed_agents.filter(name=agent_name).exists():
+        #         return Response({"error": "This API key does not allow access to this agent."}, status=403)
+
 
         result = call_ai_agent(agent_name, query, file_path, csv_file=csv_file_path)
 
@@ -218,7 +300,6 @@ class SignUpView(generics.CreateAPIView):
         return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
 
 
-
 class CustomLoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
     permission_classes = [AllowAny]
@@ -239,8 +320,6 @@ class CustomLoginView(TokenObtainPairView):
         }, status=status.HTTP_200_OK)
 
 
-
-
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -255,45 +334,179 @@ class LogoutView(APIView):
 
 
 
-
 class IntegrationSnippetAPIView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]  # ✅ only logged-in users
 
-    def get(self, request, agent_name):
+    def get(self, request, agent_name, language="python"):
         user = request.user
 
         # Get agent
         agent = get_object_or_404(Agent, name=agent_name)
-
-        # Get API key
-        api_key = APIKey.objects.filter(user=user, agent=agent).first()
-        if not api_key:
-            return Response({"error": "API key not found for this agent."}, status=403)
 
         # Get agent integration info
         integration = AgentIntegration.objects.filter(agent=agent).first()
         if not integration:
             return Response({"error": "Integration details not found."}, status=404)
 
-        # Generate code snippet safely
-        snippet = f"""import requests
-
-url = "{integration.url}"
-headers = {{
-    "Authorization": "Bearer {api_key.key}",
-    "Content-Type": "application/json"
-}}
-data = {integration.body}
-
-response = requests.{integration.method.lower()}(url, headers=headers, json=data)
-
-print(response.status_code)
-print(response.json())
-"""
+        # ✅ Instead of looking up APIKey, just insert placeholder
+        snippet = generate_code_snippet(
+            agent_name=agent.name,
+            api_key="<YOUR_API_KEY>",  # placeholder for user to replace later
+            url=integration.url,
+            method=integration.method,
+            body=integration.body,
+            language=language
+        )
 
         return Response({
             "agent": agent.name,
             "description": agent.description,
-            "integration_snippet": snippet
+            "language": language,
+            "integration_snippet": snippet,
+            "note": "Replace <YOUR_API_KEY> with a valid API key when using this code outside."
         }, status=200)
-    
+
+
+
+
+# ==================== Chat History APIs ====================
+
+class SaveChatAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        conversation_id = request.data.get("conversation_id")
+        message = request.data.get("message")
+        sender = request.data.get("sender", "user")
+
+        if not message:
+            return Response({"error": "message is required"}, status=400)
+
+        root_agent = get_object_or_404(Agent, name="root")
+
+        # Get or create conversation with root agent
+        if conversation_id:
+            conversation = get_object_or_404(Conversation, id=conversation_id, user=request.user)
+            if conversation.agent != root_agent:
+                return Response({"error": "Conversation agent mismatch"}, status=403)
+        else:
+            conversation = Conversation.objects.create(
+                user=request.user,
+                agent=root_agent,
+                title=f"Chat with {root_agent.name}"
+            )
+
+        # Save message with agent set to root agent
+        ChatMessage.objects.create(
+            conversation=conversation,
+            agent=root_agent,
+            sender=sender,
+            message=message,
+            tokens_used=len(message.split())
+        )
+
+        return Response({
+            "conversation_id": conversation.id,
+            "message": "Message saved successfully."
+        }, status=201)
+
+
+
+class ConversationHistoryAPIView(APIView):
+    """
+    Get all conversations for the authenticated user only with the root agent.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        root_agent = get_object_or_404(Agent, name="root")
+        conversations = Conversation.objects.filter(user=request.user, agent=root_agent).order_by("-created_at")
+        data = []
+
+        for convo in conversations:
+            last_message = ChatMessage.objects.filter(conversation=convo).order_by("-created_at").first()
+            data.append({
+                "conversation_id": convo.id,
+                "title": convo.title,
+                "agent": convo.agent.name if convo.agent else None,
+                "last_message": last_message.message if last_message else None,
+                "updated_at": last_message.created_at if last_message else convo.created_at
+            })
+
+        return Response(data, status=200)
+
+
+class ConversationMessagesAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, conversation_id):
+        conversation = get_object_or_404(Conversation, id=conversation_id, user=request.user)
+        if conversation.agent.name != "root":
+            return Response({"error": "This conversation is not with the root agent."}, status=403)
+
+        messages = ChatMessage.objects.filter(conversation=conversation).order_by("created_at")
+        data = [{
+            "sender": msg.sender,
+            "message": msg.message,
+            "created_at": msg.created_at,
+            "tokens_used": msg.tokens_used
+        } for msg in messages]
+
+        return Response(data, status=200)
+
+
+
+# ----------------------------------------------------------------
+
+
+
+class NewChatAPIView(APIView):
+    """
+    Start a completely new conversation with the root agent only.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        root_agent = get_object_or_404(Agent, name="root")
+
+        conversation = Conversation.objects.create(
+            user=request.user,
+            agent=root_agent,
+            title=f"Chat with {root_agent.name}"
+        )
+
+        return Response({
+            "conversation_id": conversation.id,
+            "title": conversation.title,
+            "agent": root_agent.name
+        }, status=201)
+
+
+
+
+class DeleteConversationAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, conversation_id):
+        # Fetch the conversation that belongs to the user
+        conversation = get_object_or_404(Conversation, id=conversation_id, user=request.user)
+        conversation.delete()
+        return Response({"message": "Conversation deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+def check_agent_permission(api_key, agent_name):
+    mapping = {
+        "qna": api_key.allow_qna,
+        "data": api_key.allow_data,
+        "talent": api_key.allow_talent,
+        "stock": api_key.allow_stock,
+        "resume": api_key.allow_resume,
+        "sentiment": api_key.allow_sentiment,
+        "auto": api_key.allow_auto,
+        "rag": api_key.allow_rag,
+    }
+
+    if agent_name not in mapping or not mapping[agent_name]:
+        raise PermissionDenied(f"Your API key is not authorized to access the {agent_name} agent.")

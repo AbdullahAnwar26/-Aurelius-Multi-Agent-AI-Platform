@@ -115,7 +115,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "MARS_DB",
+        "NAME": "my_new_db",
         "USER": "root",
         "PASSWORD": "12345",
         "HOST": "127.0.0.1",

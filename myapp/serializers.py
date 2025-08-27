@@ -109,12 +109,9 @@ class RootAgentMemorySerializer(serializers.ModelSerializer):
 class APIKeySerializer(serializers.ModelSerializer):
     class Meta:
         model = APIKey
-        fields = '__all__'
-        read_only_fields = ['key']  # ✅ Mark key as read-only
+        fields = ["id", "key", "allowed_agents", "is_active", "created_at"]
+        read_only_fields = ["key", "created_at"]
 
-    def create(self, validated_data):
-        validated_data['key'] = secrets.token_hex(16)  # ✅ Auto-generate key
-        return super().create(validated_data)
 
 
 class AgentFeedbackSerializer(serializers.ModelSerializer):
