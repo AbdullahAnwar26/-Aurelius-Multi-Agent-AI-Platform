@@ -13,7 +13,7 @@ router.register(r'chat-messages', ChatMessageViewSet)
 router.register(r'token-logs', TokenLogViewSet)
 router.register(r'subscriptions', SubscriptionViewSet)
 router.register(r'root-memories', RootAgentMemoryViewSet)
-router.register(r'api-keys', APIKeyViewSet)
+router.register(r'api-keys', APIKeyViewSet, basename="api-keys")
 router.register(r'agent-feedbacks', AgentFeedbackViewSet)
 
 urlpatterns = [

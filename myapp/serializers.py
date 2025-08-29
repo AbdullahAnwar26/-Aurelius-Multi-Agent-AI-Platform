@@ -67,7 +67,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         model = Conversation
         fields = '__all__'
 
-
+        
 class ChatMessageSerializer(serializers.ModelSerializer):
     conversation = ConversationSerializer(read_only=True)
     agent = AgentSerializer(read_only=True)
@@ -106,11 +106,17 @@ class RootAgentMemorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
 class APIKeySerializer(serializers.ModelSerializer):
     class Meta:
         model = APIKey
-        fields = ["id", "key", "allowed_agents", "is_active", "created_at"]
-        read_only_fields = ["key", "created_at"]
+        fields = "__all__"
+        read_only_fields = ["id", "key", "user", "created_at"]
+
+    def create(self, validated_data):
+        # Generate a random secure API key
+        validated_data["key"] = "sk_" + secrets.token_hex(16)
+        return super().create(validated_data)
 
 
 

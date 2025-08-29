@@ -137,8 +137,15 @@ class APIKey(models.Model):
     def __str__(self):
         return f"{self.user.email} - {self.key[:6]}…"
 
+# Label: [ My API Key ]
+# [✔] QnA  
+# [✔] Resume  
+# [ ] Stock  
+# [✔] RAG  
+# ...
+# [Generate Key]
 
-
+# ---------------------------------------------------------------------
 # User feedback about agents
 class AgentFeedback(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedbacks')

@@ -57,6 +57,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+
+    'DEFAULT_RENDERER_CLASSES': (
+            'myapp.utils.custom_response.CustomJSONRenderer',
+    ),
+    'EXCEPTION_HANDLER': 'myapp.utils.custom_exception_handler.custom_exception_handler'
 }
 
 

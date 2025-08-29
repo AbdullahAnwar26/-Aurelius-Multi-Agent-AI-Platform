@@ -249,15 +249,24 @@ class RootAgentMemoryViewSet(ModelViewSet):
 
 
 class APIKeyViewSet(ModelViewSet):
-    queryset = APIKey.objects.all()
     serializer_class = APIKeySerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        # Only return keys owned by logged-in user
         return APIKey.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_destroy(self, instance):
+        if instance.user == self.request.user:
+            instance.delete()
+
+
 
 
 class AgentFeedbackViewSet(ModelViewSet):
