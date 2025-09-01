@@ -53,6 +53,12 @@ class RootAgentAPIView(APIView):
             defaults={"description": "Root Orchestrator Agent"}
         )
 
+        # Normalize conversation_id: convert to int if possible, otherwise None
+        try:
+            conversation_id = int(conversation_id)
+        except (TypeError, ValueError):
+            conversation_id = None
+
         # Get or create conversation
         if conversation_id:
             conversation = get_object_or_404(Conversation, id=conversation_id, user=user)
@@ -106,6 +112,7 @@ class RootAgentAPIView(APIView):
             "user_message": user_message_text,
             "ai_reply": ai_reply_text
         }, status=200)
+
 
 
 # ==================== Individual Agent View ====================

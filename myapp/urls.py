@@ -41,7 +41,7 @@ urlpatterns = [
 
 
     # 🔐 Auth APIs
-    path('api/signup/', SignUpView.as_view(), name='signup'),
+    path('  ', SignUpView.as_view(), name='signup'),
     path('api/login/', CustomLoginView.as_view(), name='login'),
     path('api/logout/', LogoutView.as_view(), name='logout'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

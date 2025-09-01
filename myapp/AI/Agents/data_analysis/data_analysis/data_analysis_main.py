@@ -1,9 +1,12 @@
 import warnings
 from myapp.AI.Agents.data_analysis.data_analysis.crew import AnalysisAgent
+from crewai.tools import tool
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
-def run_data_analysis(query:str ,file_path : str):        
+@tool
+def run_data_analysis(query:str ,file_path : str):   
+    """This tool analyzes the given dataset and returns demanded insights."""     
     inputs = {
         "query": query,
         "file_path": file_path,

@@ -1,12 +1,16 @@
-Subject: Test Mail for Mail Automation Agent
+Subject: Discovering the Beauty of Kerala
 
-Dear Team,
+Dear 22caliberpistol@gmail.com and abdullahanwar264@gmail.com,
 
-This email serves as a test for our new AI-powered mail automation agent.
+I hope this email finds you well.
 
-This is the test mail of the AI agent from Affycloud. Thank you for your cooperation in this testing process.  Your feedback is valuable as we refine this system.
+I'm writing to share some information about the beautiful state of Kerala, located on the southwestern coast of India.  Kerala is renowned for its stunning natural beauty, a captivating blend of lush green landscapes, serene backwaters, and pristine beaches.  The region boasts a rich biodiversity, from the spice plantations of the Western Ghats to the diverse marine life along its coastline.
+
+Beyond its natural attractions, Kerala offers a unique cultural experience.  The region is known for its ancient traditions, vibrant festivals, and its unique Ayurvedic healing practices.  The architecture, cuisine, and art forms reflect a rich history and a distinct identity.
+
+I've attached a document with further details about Kerala's tourism attractions and cultural aspects.  I hope you find it informative and inspiring. Please let me know if you have any questions.
 
 
 Sincerely,
 
-The Affycloud Team
+[Your Name]

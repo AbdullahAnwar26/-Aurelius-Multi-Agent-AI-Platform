@@ -15,9 +15,9 @@ import os
 load_dotenv()
 
 rootkey  = os.getenv('GOOGLE_API_KEY')
-rootllm = LLM(model= "gemini/gemini-2.0", api_key=rootkey)
-planningllm = LLM(model= "gemini/gemini-2.0", api_key=rootkey)
-tools1=[qna_agent,automation_run,run_data_analysis,run_stock,run_talent_sourcing, run_rag_root,run_sentiment]
+rootllm = LLM(model= "gemini/gemini-2.0-flash", api_key=rootkey)
+planningllm = LLM(model= "gemini/gemini-2.0-flash", api_key=rootkey)
+
 
 def manager_agent_function(query:str, attachment=None,file=None, csv_file=None):
     manager_agent = Agent(llm=rootllm,
@@ -31,10 +31,9 @@ def manager_agent_function(query:str, attachment=None,file=None, csv_file=None):
                                 - The Resume Sculptor who reshapes careers into perfect fits.
                                 - The Talent Scout who finds the right names from the depths of data.
 
-Your power is not in doing their work, but in orchestrating their talents like a symphony — ensuring each plays at the right moment, in perfect sequence. You thrive on discipline: never assigning a task to the wrong player, never improvising when a clear path has been given. Your hallmark is flawless routing, minimal friction, and maximum synergy."""
-,
+Your power is not in doing their work, but in orchestrating their talents like a symphony — ensuring each plays at the right moment, in perfect sequence. You thrive on discipline: never assigning a task to the wrong player, never improvising when a clear path has been given. Your hallmark is flawless routing, minimal friction, and maximum synergy.""",
                         role="Supreme Coordinator of Multi-Specialized Intelligence Crews",
-                        tools=tools1,  # type: ignore
+                        tools=[qna_agent,automation_run,run_data_analysis,run_stock,run_talent_sourcing, run_rag_root,run_sentiment],  # type: ignore
                         goal="""Receive any incoming request and:
                         1. Obey explicit instructions without deviation when the user specifies a particular agent or crew.
                         2. Diagnose and decompose multi-faceted requests when no specific agent is mentioned, identifying exactly which agents’ strengths are needed.
