@@ -41,6 +41,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "https://frontend-domain.vercel.app",  # replace later
+]
+
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
