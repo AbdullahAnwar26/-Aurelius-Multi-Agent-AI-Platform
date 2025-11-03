@@ -2,6 +2,9 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import *
+from django.http import JsonResponse
+
+
 
 # 🚀 CRUD API Router for Models
 router = DefaultRouter()
@@ -15,6 +18,10 @@ router.register(r'subscriptions', SubscriptionViewSet)
 router.register(r'root-memories', RootAgentMemoryViewSet)
 router.register(r'api-keys', APIKeyViewSet, basename="api-keys")
 router.register(r'agent-feedbacks', AgentFeedbackViewSet)
+
+
+def health_check(request):
+    return JsonResponse({"status": "Backend running successfully"})
 
 urlpatterns = [
     # 🔁 Agent APIs
