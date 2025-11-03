@@ -3,22 +3,28 @@ from django.contrib.auth.models import AbstractUser
 import uuid
 import secrets
 from django.conf import settings
+# from django.utils import timezone
+# import datetime
+# import uuid
 
-# Extended User model
+
 class User(AbstractUser):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=20)
+    phone = models.CharField(max_length=12, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Login by email instead of username
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']  # keep username for compatibility
+    REQUIRED_FIELDS = ['username']
+
+    # Verification flags
+    # is_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email
 
 
-# Agent model for AI microservices
 class Agent(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -30,6 +36,30 @@ class Agent(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# class OTP(models.Model):
+#     """
+#     Store OTPs for audit/troubleshooting. OTPs are single-use and expire.
+#     """
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="otps")
+#     code = models.CharField(max_length=6)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     expires_at = models.DateTimeField()
+#     is_used = models.BooleanField(default=False)
+#     send_count = models.IntegerField(default=1)
+
+#     def is_expired(self):
+#         return timezone.now() >= self.expires_at
+
+#     def mark_used(self):
+#         self.is_used = True
+#         self.save()
+
+#     def __str__(self):
+#         return f"OTP for {self.user.email} ({'used' if self.is_used else 'unused'})"
+
 
 
 # Each agent can have an API integration

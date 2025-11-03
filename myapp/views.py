@@ -334,6 +334,134 @@ class CustomLoginView(TokenObtainPairView):
             "access": data["access"],
             "refresh": data["refresh"]
         }, status=status.HTTP_200_OK)
+    
+
+# ==================== signup with validation =======================
+
+
+# from rest_framework.permissions import AllowAny, IsAuthenticated
+# from django.utils import timezone
+# from django.conf import settings
+# from datetime import timedelta
+# from .tasks import send_otp_email_task
+# import random
+
+# OTP_LENGTH = 6
+# OTP_VALID_MINUTES = 10
+# MAX_RESEND_PER_HOUR = 3
+
+# def generate_otp_code():
+#     return f"{random.randint(0, 999999):06d}"
+
+
+# class SignUpView(generics.CreateAPIView):
+#     """
+#     Create user -> immediately generate OTP and send email asynchronously.
+#     """
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+#     permission_classes = [AllowAny]
+
+#     def perform_create(self, serializer):
+#         # create user but leave is_verified=False
+#         # Note: set is_active=True if you want user to be able to log in after verification only.
+#         self.user = serializer.save(is_verified=False, is_active=True)
+
+#         # create initial OTP
+#         code = generate_otp_code()
+#         now = timezone.now()
+#         otp = OTP.objects.create(
+#             user=self.user,
+#             code=code,
+#             expires_at=now + timedelta(minutes=OTP_VALID_MINUTES),
+#             send_count=1
+#         )
+
+#         # send email asynchronously via celery
+#         send_otp_email_task.delay(str(otp.id))
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_create(serializer)
+#         headers = self.get_success_headers(serializer.data)
+#         return Response(
+#             {"message": "Account created. Check your email for verification OTP."},
+#             status=status.HTTP_201_CREATED,
+#             headers=headers
+#         )
+
+
+# class VerifyOTPView(generics.GenericAPIView):
+#     permission_classes = [AllowAny]
+
+#     def post(self, request, *args, **kwargs):
+#         email = request.data.get("email")
+#         otp_code = request.data.get("otp")
+
+#         if not email or not otp_code:
+#             return Response({"error": "email and otp are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             user = User.objects.get(email=email)
+#         except User.DoesNotExist:
+#             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+#         # get latest unused OTP for user
+#         otp = OTP.objects.filter(user=user, is_used=False).order_by('-created_at').first()
+#         if not otp:
+#             return Response({"error": "No OTP found. Request a new one."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         if otp.is_expired():
+#             return Response({"error": "OTP expired. Request a new one."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         if otp.code != str(otp_code).zfill(OTP_LENGTH):
+#             return Response({"error": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # success -> mark used and mark user verified
+#         otp.is_used = True
+#         otp.save()
+#         user.is_verified = True
+#         user.save(update_fields=["is_verified"])
+
+#         return Response({"message": "Email verified successfully."}, status=status.HTTP_200_OK)
+
+
+# class ResendOTPView(generics.GenericAPIView):
+#     permission_classes = [AllowAny]
+
+#     def post(self, request, *args, **kwargs):
+#         email = request.data.get("email")
+#         if not email:
+#             return Response({"error": "email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             user = User.objects.get(email=email)
+#         except User.DoesNotExist:
+#             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+#         # Count OTPs sent in the last hour
+#         one_hour_ago = timezone.now() - timedelta(hours=1)
+#         sent_count_last_hour = OTP.objects.filter(user=user, created_at__gte=one_hour_ago).count()
+
+#         if sent_count_last_hour >= MAX_RESEND_PER_HOUR:
+#             return Response({"error": "OTP resend limit reached. Try again later."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
+#         # create a new OTP and send
+#         code = generate_otp_code()
+#         now = timezone.now()
+#         otp = OTP.objects.create(
+#             user=user,
+#             code=code,
+#             expires_at=now + timedelta(minutes=OTP_VALID_MINUTES),
+#             send_count=1
+#         )
+
+#         send_otp_email_task.delay(str(otp.id))
+
+#         return Response({"message": "OTP resent to your email."}, status=status.HTTP_200_OK)
+
+# =====================================================================
 
 
 class LogoutView(APIView):

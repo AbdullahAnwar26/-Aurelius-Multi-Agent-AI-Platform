@@ -41,7 +41,9 @@ urlpatterns = [
 
 
     # 🔐 Auth APIs
-    path('  ', SignUpView.as_view(), name='signup'),
+    path('api/signup/', SignUpView.as_view(), name='signup'),
+    # path("verify-otp/", VerifyOTPView.as_view(), name="verify-otp"),
+    # path("resend-otp/", ResendOTPView.as_view(), name="resend-otp"),
     path('api/login/', CustomLoginView.as_view(), name='login'),
     path('api/logout/', LogoutView.as_view(), name='logout'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
@@ -59,3 +61,4 @@ urlpatterns = [
     path('api/public-agents/', PublicAgentListView.as_view(), name='public-agents'),
     path('api/public-agents/<int:id>/', PublicAgentDetailView.as_view(), name='agent-detail'),
 ]
+

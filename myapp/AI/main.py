@@ -15,7 +15,7 @@ import os
 load_dotenv()
 
 rootkey  = os.getenv('GOOGLE_API_KEY')
-rootllm = LLM(model= "gemini/gemini-2.0-flash", api_key=rootkey)
+rootllm = LLM(model= "gemini/gemini-2.5-flash-lite", api_key=rootkey)
 planningllm = LLM(model= "gemini/gemini-2.0-flash", api_key=rootkey)
 
 

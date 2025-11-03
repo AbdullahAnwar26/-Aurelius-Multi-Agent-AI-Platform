@@ -41,7 +41,7 @@ class NewDecisionSupport():
     # If you would like to add tools to your agents, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
     key  = os.getenv('GOOGLE_API_KEY')
-    llm1 = LLM(model= "gemini/gemini-2.0-flash", api_key=key)
+    llm1 = LLM(model= "gemini/gemini-1.5-flash", api_key=key)
     @agent
     def Company_extractor_agent(self) -> Agent:
         return Agent(
