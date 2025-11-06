@@ -24,7 +24,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-
 class Agent(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -59,7 +58,6 @@ class Agent(models.Model):
 
 #     def __str__(self):
 #         return f"OTP for {self.user.email} ({'used' if self.is_used else 'unused'})"
-
 
 
 # Each agent can have an API integration
