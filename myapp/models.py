@@ -58,7 +58,7 @@ class Agent(models.Model):
 
 #     def __str__(self):
 #         return f"OTP for {self.user.email} ({'used' if self.is_used else 'unused'})"
-
+ 
 
 # Each agent can have an API integration
 class AgentIntegration(models.Model):
