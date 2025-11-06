@@ -1,6 +1,6 @@
 from crewai import LLM, Task, Crew, Agent
 from crewai.tools import tool
-from myapp.AI.Agents.qna_Agent.qna_agent_root import qna_agent
+from myapp.AI.Agents.qna_agent.qna_agent_root import qna_agent
 from myapp.AI.Agents.automation_agent2.src.automation.run_auto_tool import automation_run
 from myapp.AI.Agents.data_analysis.data_analysis.data_analysis_main import run_data_analysis
 from myapp.AI.Agents.stock_agent.src.new_decision_support.stock_root import run_stock
