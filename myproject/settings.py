@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
 import os
-# import dj_database_url
+import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -83,19 +83,15 @@ TEMPLATES = [
 WSGI_APPLICATION = "myproject.wsgi.application"
 
 # DATABASE
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT', 5432),
-        'OPTIONS': {
-            'sslmode': os.getenv('DB_SSLMODE', 'require'),
-        },
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
     }
-}
+else:
+    raise Exception("DATABASE_URL is not set in environment variables.")
+
 # AUTH
 AUTH_USER_MODEL = "myapp.User"
 
