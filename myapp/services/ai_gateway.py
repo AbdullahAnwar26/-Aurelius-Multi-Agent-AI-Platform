@@ -1,4 +1,4 @@
-from myapp.AI.Agents.qna_agent.qna_user_agent import qna_agent
+from myapp.AI.Agents.Qna_Agent.qna_user_agent import qna_agent
 from myapp.AI.Agents.data_analysis.data_analysis.data_analysis_main import run_data_analysis
 from myapp.AI.Agents.talent_sourcing1.talent_main import run_recruitment_crew
 from myapp.AI.Agents.stock_agent.src.new_decision_support.stock_main import run_stock
