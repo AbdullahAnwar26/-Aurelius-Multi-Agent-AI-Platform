@@ -18,8 +18,9 @@ def tavily_search(query:str):
     return search   
 
 key=os.getenv('GEMINI_API_KEY')
-llm = LLM(model= "gemini/gemini-2.0-flash", api_key=key)
-
+def get_llm():
+    key = os.environ.get("GOOGLE_API_KEY")
+    return LLM(model="gemini/gemini-2.0-flash", api_key=key)
 chat_memory = []
 
 @tool
