@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import ListAPIView
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -11,13 +10,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-# from rest_framework.authentication import BasicAuthentication
 from rest_framework.exceptions import PermissionDenied
+
 from .models import *
 from .serializers import *
 from .services.ai_gateway import call_ai_agent
 from .services.code_snippet_generator import generate_code_snippet
 from .authentication import APIKeyAuthentication
+
 
 
 import os
