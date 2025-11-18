@@ -1,5 +1,5 @@
 import warnings
-from myapp.AI.Agents.data_analysis.data_analysis.crew import AnalysisAgent
+from myapp.ai.agents.data_analysis.data_analysis.crew import AnalysisAgent
 from crewai.tools import tool
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")

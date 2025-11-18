@@ -7,7 +7,7 @@ import json
 import os
 from crewai import LLM
 from dotenv import load_dotenv
-from myapp.AI.Agents.data_analysis.data_analysis.tools.classifier import get_data_path_from_query
+from myapp.ai.agents.data_analysis.data_analysis.tools.classifier import get_data_path_from_query
 
 load_dotenv()
 

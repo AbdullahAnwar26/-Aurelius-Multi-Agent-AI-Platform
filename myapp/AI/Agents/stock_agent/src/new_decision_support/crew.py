@@ -1,11 +1,11 @@
-from myapp.AI.Agents.stock_agent.src.new_decision_support.tools.ticker_lookup_tool import ticker_lookup
-from myapp.AI.Agents.stock_agent.src.new_decision_support.tools.stock_performance_tool import (
+from myapp.ai.agents.stock_agent.src.new_decision_support.tools.ticker_lookup_tool import ticker_lookup
+from myapp.ai.agents.stock_agent.src.new_decision_support.tools.stock_performance_tool import (
     company_research_tool,
     stock_performance_tool,
     basic_company_info_tool
 )
-from myapp.AI.Agents.stock_agent.src.new_decision_support.tools.company_researcher_tool import create_news_tool
-from myapp.AI.Agents.stock_agent.src.new_decision_support.tools.plotly_stock_chart_tool import stock_line_plot
+from myapp.ai.agents.stock_agent.src.new_decision_support.tools.company_researcher_tool import create_news_tool
+from myapp.ai.agents.stock_agent.src.new_decision_support.tools.plotly_stock_chart_tool import stock_line_plot
 from crewai import LLM
 from dotenv import load_dotenv
 load_dotenv()

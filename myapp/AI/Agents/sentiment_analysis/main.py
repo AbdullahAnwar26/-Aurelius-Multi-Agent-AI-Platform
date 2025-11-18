@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from myapp.AI.Agents.sentiment_analysis.crew import Sentiment_analysis_crew
+from myapp.ai.agents.sentiment_analysis.crew import Sentiment_analysis_crew
 
 # This main file is intended to be a way for your to run your
 # crew locally, so refrain from adding unnecessary logic into this file.

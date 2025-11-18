@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
 import os
-import dj_database_url
+# import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -41,8 +41,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-
-
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
@@ -81,15 +79,34 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "myproject.wsgi.application"
 
-# DATABASE
-DATABASE_URL = os.getenv("DATABASE_URL")
 
-if DATABASE_URL:
-    DATABASES = {
-        "default": dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
-    }
-else:
+from urllib.parse import urlparse, parse_qs
+import os
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
     raise Exception("DATABASE_URL is not set in environment variables.")
+
+url = urlparse(DATABASE_URL)
+query = parse_qs(url.query)
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": url.path.lstrip("/"),
+        "USER": url.username,
+        "PASSWORD": url.password,
+        "HOST": url.hostname,
+        "PORT": url.port or 5432,
+        "ATOMIC_REQUESTS": True,
+        "CONN_MAX_AGE": 600,
+        "OPTIONS": {
+            "sslmode": query.get("sslmode", ["require"])[0],
+            "channel_binding": query.get("channel_binding", ["require"])[0],
+        },
+    }
+}
+
 
 # AUTH
 AUTH_USER_MODEL = "myapp.User"
@@ -108,18 +125,16 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# SECURITY HEADERS (RENDER RECOMMENDED)
+# SECURITY HEADERS
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "https://your-render-domain.onrender.com").split(",")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
 
 # STATIC & MEDIA FILES
 STATIC_URL = "/static/"

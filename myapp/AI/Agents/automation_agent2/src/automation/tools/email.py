@@ -8,7 +8,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 import pandas as pd
 import re
-from myapp.AI.Agents.automation_agent2.src.automation.log_in import email, password  
+from myapp.ai.agents.automation_agent2.src.automation.log_in import email, password  
 
 def user_login(email: str = email, password: str = password):
     user_email= email

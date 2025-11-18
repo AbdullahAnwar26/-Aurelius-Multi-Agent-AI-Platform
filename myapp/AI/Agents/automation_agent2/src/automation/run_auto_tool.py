@@ -1,5 +1,5 @@
 import sys
-from myapp.AI.Agents.automation_agent2.src.automation.crew import AutomationAgent
+from myapp.ai.agents.automation_agent2.src.automation.crew import AutomationAgent
 from datetime import datetime
 from crewai.tools import tool
 import os

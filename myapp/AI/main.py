@@ -1,12 +1,12 @@
 from crewai import LLM, Task, Crew, Agent
 from crewai.tools import tool
-from myapp.AI.Agents.qna_agent.qna_agent_root import qna_agent
-from myapp.AI.Agents.automation_agent2.src.automation.run_auto_tool import automation_run
-from myapp.AI.Agents.data_analysis.data_analysis.data_analysis_main import run_data_analysis
-from myapp.AI.Agents.stock_agent.src.new_decision_support.stock_root import run_stock
-from myapp.AI.Agents.talent_sourcing1.talent_sourcing_root import run_talent_sourcing
-from myapp.AI.Agents.rag_researcher.rag_researcher.src.research.rag_root import run_rag_root
-from myapp.AI.Agents.sentiment_analysis.sentiment_tool import run_sentiment
+from myapp.ai.agents.qna_agent.qna_agent_root import qna_agent
+from myapp.ai.agents.automation_agent2.src.automation.run_auto_tool import automation_run
+from myapp.ai.agents.data_analysis.data_analysis.data_analysis_main import run_data_analysis
+from myapp.ai.agents.stock_agent.src.new_decision_support.stock_root import run_stock
+from myapp.ai.agents.talent_sourcing1.talent_sourcing_root import run_talent_sourcing
+from myapp.ai.agents.rag_researcher.rag_researcher.src.research.rag_root import run_rag_root
+from myapp.ai.agents.sentiment_analysis.sentiment_tool import run_sentiment
 # from myapp.AI.Agents.resume_optimiser.resume_agent.resume_optimiser_root import run_resume_opt
 from dotenv import load_dotenv
 from datetime import datetime

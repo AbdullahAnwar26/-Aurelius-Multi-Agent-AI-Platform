@@ -3,7 +3,7 @@ from crewai.project import CrewBase, agent, crew, task
 # from crewai.tools import SerperDevTool
 from pydantic import BaseModel, Field
 from typing import List, Dict
-from myapp.AI.Agents.automation_agent2.src.automation.tools.email import send_email_smtp  
+from myapp.ai.agents.automation_agent2.src.automation.tools.email import send_email_smtp  
 import re
 import os
 

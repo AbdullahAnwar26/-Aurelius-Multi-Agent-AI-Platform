@@ -3,7 +3,7 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
 # from agents.rag_researcher.src.research.tools.custom_tool import rag_tool
-from myapp.AI.Agents.rag_researcher.rag_researcher.src.research.tools.custom_tool import rag_tool
+from myapp.ai.agents.rag_researcher.rag_researcher.src.research.tools.custom_tool import rag_tool
 
 import os
 

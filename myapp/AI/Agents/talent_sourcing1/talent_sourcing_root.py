@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from myapp.AI.Agents.talent_sourcing1.crew import tech_recruitment_crew 
+from myapp.ai.agents.talent_sourcing1.crew import tech_recruitment_crew 
 from crewai.tools import tool
 from crewai import LLM
 

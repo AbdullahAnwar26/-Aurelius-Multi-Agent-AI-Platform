@@ -2,7 +2,7 @@ from crewai import Agent, Crew, Process, Task,LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
-from myapp.AI.Agents.sentiment_analysis.tools.custom_tools import AnalyzeReviewsTool
+from myapp.ai.agents.sentiment_analysis.tools.custom_tools import AnalyzeReviewsTool
 from crewai_tools import FileReadTool
 import os
 

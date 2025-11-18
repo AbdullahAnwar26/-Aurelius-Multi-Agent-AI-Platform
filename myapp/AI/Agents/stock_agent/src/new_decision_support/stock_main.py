@@ -2,7 +2,7 @@
 import sys
 import warnings
 from datetime import datetime
-from myapp.AI.Agents.stock_agent.src.new_decision_support.crew import NewDecisionSupport
+from myapp.ai.agents.stock_agent.src.new_decision_support.crew import NewDecisionSupport
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 def run_stock(query:str):

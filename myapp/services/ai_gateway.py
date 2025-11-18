@@ -1,14 +1,14 @@
-from myapp.AI.Agents.qna_agent.qna_user_agent import qna_agent
-from myapp.AI.Agents.data_analysis.data_analysis.data_analysis_main import run_data_analysis
-from myapp.AI.Agents.talent_sourcing1.talent_main import run_recruitment_crew
-from myapp.AI.Agents.stock_agent.src.new_decision_support.stock_main import run_stock
-from myapp.AI.Agents.resume_optimizer.resume_optimizer.resume_opt_agent import run_resume_opt
-from myapp.AI.Agents.sentiment_analysis.sentiment_tool import run_sentiment
-from myapp.AI.Agents.automation_agent2.src.automation.main import auto_run
-from myapp.AI.Agents.rag_researcher.rag_researcher.src.research import rag_main
-from myapp.AI import main  # Root agent
+from myapp.ai.agents.qna_agent.qna_user_agent import qna_agent
+from myapp.ai.agents.data_analysis.data_analysis.data_analysis_main import run_data_analysis
+from myapp.ai.agents.talent_sourcing1.talent_main import run_recruitment_crew
+from myapp.ai.agents.stock_agent.src.new_decision_support.stock_main import run_stock
+from myapp.ai.agents.resume_optimizer.resume_optimizer.resume_opt_agent import run_resume_opt
+from myapp.ai.agents.sentiment_analysis.sentiment_tool import run_sentiment
+from myapp.ai.agents.automation_agent2.src.automation.main import auto_run
+from myapp.ai.agents.rag_researcher.rag_researcher.src.research import rag_main
+from myapp.ai import main  # Root agent
 from datetime import datetime
-from myapp.AI.Agents.resume_optimizer.resume_optimizer.resume_opt_agent import (
+from myapp.ai.agents.resume_optimizer.resume_optimizer.resume_opt_agent import (
     ResumeOpt,
     run_resume_opt,
     extract_text

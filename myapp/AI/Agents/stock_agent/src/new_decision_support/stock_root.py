@@ -2,7 +2,7 @@
 import sys
 import warnings
 from datetime import datetime
-from myapp.AI.Agents.stock_agent.src.new_decision_support.crew import NewDecisionSupport
+from myapp.ai.agents.stock_agent.src.new_decision_support.crew import NewDecisionSupport
 from crewai.tools import tool
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 

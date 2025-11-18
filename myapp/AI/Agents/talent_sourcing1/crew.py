@@ -1,7 +1,7 @@
 import os
 from crewai import Agent, Task, Crew, Process, LLM
-from myapp.AI.Agents.talent_sourcing1.tools.githubsearch import GitHubCandidateSearchTool
-from myapp.AI.Agents.talent_sourcing1.tools.jdparser import jdParser
+from myapp.ai.agents.talent_sourcing1.tools.githubsearch import GitHubCandidateSearchTool
+from myapp.ai.agents.talent_sourcing1.tools.jdparser import jdParser
 from dotenv import load_dotenv
 
 load_dotenv()

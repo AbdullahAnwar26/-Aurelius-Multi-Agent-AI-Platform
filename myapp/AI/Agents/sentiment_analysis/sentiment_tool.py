@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from myapp.AI.Agents.sentiment_analysis.crew import Sentiment_analysis_crew
+from myapp.ai.agents.sentiment_analysis.crew import Sentiment_analysis_crew
 from crewai.tools import tool
 import os
 

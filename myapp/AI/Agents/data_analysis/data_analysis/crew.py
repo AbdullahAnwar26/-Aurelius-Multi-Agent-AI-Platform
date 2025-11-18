@@ -3,10 +3,10 @@ from crewai import Agent, Crew, Task, Process, LLM
 from crewai.project import CrewBase, crew, agent, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 import os
-from myapp.AI.Agents.data_analysis.data_analysis.tools.custom_tool import load_user_data
-from myapp.AI.Agents.data_analysis.data_analysis.tools.preprocess_tool import preprocess_and_save_data
-from myapp.AI.Agents.data_analysis.data_analysis.tools.analysis import generate_and_execute_analysis
-from myapp.AI.Agents.data_analysis.data_analysis.tools.viz import generate_and_execute_visualization
+from myapp.ai.agents.data_analysis.data_analysis.tools.custom_tool import load_user_data
+from myapp.ai.agents.data_analysis.data_analysis.tools.preprocess_tool import preprocess_and_save_data
+from myapp.ai.agents.data_analysis.data_analysis.tools.analysis import generate_and_execute_analysis
+from myapp.ai.agents.data_analysis.data_analysis.tools.viz import generate_and_execute_visualization
 
 @CrewBase
 class AnalysisAgent:

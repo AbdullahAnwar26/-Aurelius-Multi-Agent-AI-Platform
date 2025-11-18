@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 from pathlib import Path
 from crewai_tools import RagTool
 # from agents.rag_researcher.src.research.tools.rag_tool_config import tool_config
-from myapp.AI.Agents.rag_researcher.rag_researcher.src.research.tools.rag_tool_config import tool_config
+from myapp.ai.agents.rag_researcher.rag_researcher.src.research.tools.rag_tool_config import tool_config
 
 
 rag_tool = RagTool(config=tool_config)
