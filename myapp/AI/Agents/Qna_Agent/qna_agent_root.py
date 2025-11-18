@@ -18,7 +18,10 @@ def tavily_search(query:str):
     return search   
 
 key=os.getenv('GEMINI_API_KEY')
-llm = LLM(model= "gemini/gemini-2.0-flash", api_key=key)
+
+def get_llm():
+    key = os.environ.get("GOOGLE_API_KEY")
+    return LLM(model="gemini/gemini-2.0-flash", api_key=key)
 
 chat_memory = []
 
@@ -28,7 +31,7 @@ def qna_agent(user_input:str):
     
     
     context = "\n".join([f"User: {q}\n  Assistant: {a}" for q, a in chat_memory[-5:]])   
-    agent1 = Agent(llm=llm,
+    agent1 = Agent(llm=get_llm(),
         tools=[tavily_search,], #type:ignore
         backstory="""You are a helpful assistant who can answer questions using 
         your knowledge. When you don't know something, you search the web for 
