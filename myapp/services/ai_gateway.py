@@ -18,7 +18,7 @@ import os
 
 def call_ai_agent(agent_type, query, file_path=None, csv_file=None):
     if agent_type == "qna":
-        from myapp.ai.agents.Qna_Agent.qna_user_agent import qna_agent
+        from myapp.ai.agents.qna_agent.qna_user_agent import qna_agent
         return qna_agent(query)
 
     elif agent_type == "data":
