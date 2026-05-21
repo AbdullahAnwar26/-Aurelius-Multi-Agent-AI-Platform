@@ -8,10 +8,16 @@ from crewai import LLM
 load_dotenv()
 
 # --- Configuration Check ---
-if not os.getenv("GITHUB_TOKEN"):
-    raise ValueError("GITHUB_TOKEN environment variable not set. Please create a .env file with your token.")
-if not os.getenv("GEMINI_API_KEY"):
-    raise ValueError("GEMINI_API_KEY environment variable not set. Please create a .env file with your key.")
+@tool
+def run_talent_sourcing(query: str):
+    """Run the talent sourcing crew..."""
+    if not os.getenv("GITHUB_TOKEN"):
+        return {"error": "GITHUB_TOKEN environment variable not set."}
+    if not os.getenv("GEMINI_API_KEY"):
+        return {"error": "GEMINI_API_KEY environment variable not set."}
+    numberofcandidates = num_of_candidates(query)
+    result = tech_recruitment_crew.kickoff(inputs={'job_description': query, 'num_candidates': numberofcandidates})
+    return result
 
 
 def num_of_candidates(query:str)->int:

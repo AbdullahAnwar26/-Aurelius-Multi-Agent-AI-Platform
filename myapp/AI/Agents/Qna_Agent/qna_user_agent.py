@@ -24,7 +24,7 @@ def get_llm():
 
 chat_memory = []
 
-def qna_agent(user_input:str):
+def run_qna(user_input:str):
     "Tool that wraps a Crew to answer user queries."
     
     

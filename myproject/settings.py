@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "myapp",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "django_celery_results",
 ]
 
 # MIDDLEWARE
@@ -102,7 +103,7 @@ DATABASES = {
         "CONN_MAX_AGE": 600,
         "OPTIONS": {
             "sslmode": query.get("sslmode", ["require"])[0],
-            "channel_binding": query.get("channel_binding", ["require"])[0],
+            # "channel_binding": query.get("channel_binding", ["require"])[0],
         },
     }
 }
@@ -139,4 +140,12 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 # STATIC & MEDIA FILES
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_CACHE_BACKEND = "default"

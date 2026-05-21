@@ -139,6 +139,12 @@ class AgentAPIView(APIView):
         print("file :", file)
         # csv_file = request.FILES.get("csv")
         agent_name = agent_name or request.data.get("agent_name")
+
+        # Check API key agent permissions if applicable
+        if hasattr(request, 'api_key'):
+            from .authentication import APIKeyAuthentication
+            APIKeyAuthentication.check_agent_permission(request, agent_name)
+    
         user = request.user
 
         # ✅ If talent agent, use the whole request.data dict

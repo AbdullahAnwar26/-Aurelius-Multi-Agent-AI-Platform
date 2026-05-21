@@ -1,25 +1,11 @@
-from myapp.ai.agents.qna_agent.qna_user_agent import qna_agent
-from myapp.ai.agents.data_analysis.data_analysis.data_analysis_main import run_data_analysis
-from myapp.ai.agents.talent_sourcing1.talent_main import run_recruitment_crew
-from myapp.ai.agents.stock_agent.src.new_decision_support.stock_main import run_stock
-from myapp.ai.agents.resume_optimizer.resume_optimizer.resume_opt_agent import run_resume_opt
-from myapp.ai.agents.sentiment_analysis.sentiment_tool import run_sentiment
-from myapp.ai.agents.automation_agent2.src.automation.main import auto_run
-from myapp.ai.agents.rag_researcher.rag_researcher.src.research import rag_main
 from myapp.ai import main  # Root agent
-from datetime import datetime
-from myapp.ai.agents.resume_optimizer.resume_optimizer.resume_opt_agent import (
-    ResumeOpt,
-    run_resume_opt,
-    extract_text
-)
 from datetime import datetime
 import os
 
 def call_ai_agent(agent_type, query, file_path=None, csv_file=None):
     if agent_type == "qna":
-        from myapp.ai.agents.qna_agent.qna_user_agent import qna_agent
-        return qna_agent(query)
+        from myapp.ai.agents.qna_agent.qna_user_agent import run_qna
+        return run_qna(query)
 
     elif agent_type == "data":
         from myapp.ai.agents.data_analysis.data_analysis.data_analysis_main import run_data_analysis
@@ -45,9 +31,6 @@ def call_ai_agent(agent_type, query, file_path=None, csv_file=None):
             resume_text = extract_text(file_path)[:3000]
             jd_text = extract_text(query)[:3000] if os.path.isfile(query) else query[:3000]
 
-            # Option 1: Shortcut function
-            result = run_resume_opt(file_path, query)
-
             # Option 2: Manual crew (switch if needed)
             result = ResumeOpt().crew().kickoff(inputs={
                 'resume': resume_text,
@@ -61,7 +44,7 @@ def call_ai_agent(agent_type, query, file_path=None, csv_file=None):
 
     elif agent_type == "sentiment":
         from myapp.ai.agents.sentiment_analysis.sentiment_tool import run_sentiment
-        return run_sentiment.func(file_path=file_path, csv_file=csv_file)
+        return run_sentiment.func(f"file_path={file_path}, csv_file={csv_file}")
 
     elif agent_type == "auto":
         from myapp.ai.agents.automation_agent2.src.automation.main import auto_run
@@ -73,7 +56,7 @@ def call_ai_agent(agent_type, query, file_path=None, csv_file=None):
 
     elif agent_type == "root":
         from myapp.ai import main
-        return main.manager_agent_function(query, file_path)
+        return main.manager_agent_function(query=query, file=file_path)
 
     else:
         return {"error": "Invalid agent_type"}
